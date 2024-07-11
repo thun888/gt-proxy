@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>IP验证</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        
+        #center {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border: 1px;
+            backdrop-filter: blur(30px) brightness(80%) saturate(160%);
+        }
+        
+        .cf-turnstile {
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        
+        .gap {
+            height: 2px;
+            width: 100%;
+            background-color: #dbdada;
+            border-radius: 1%;
+            margin: 20px 0
+        }
+        
+        .link {
+            text-align: center;
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .link :hover {
+            color: #007BFF;
+        }
+        
+        a {
+            color: #58b142;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .link a {
+            color: #999999;
+        }
+    </style>
+    <script defer src="https://seeyou.hzchu.top/seeyou.js" data-website-id="db773248-e090-4651-a7d1-abfaca1dc74f"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+    <link rel="stylesheet" href="https://jsd.hzchu.top/npm/notyf@3/notyf.min.css">
+    <script src="https://jsd.hzchu.top/npm/notyf@3/notyf.min.js"></script>
+    <link rel="icon" href="https://raw.hzchu.top/thun888/asstes/master/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <div id="center">
+        <h1>IP验证</h1>
+        <p>请先完成验证后使用镜像站点</p>
+        <p id="tips">请耐心等待验证码加载完成</p>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAL_vLmSTqs3ca7Y" data-callback="turnstilecb"></div>
+        <button id="submit">确定</button>
+        <div class="gap"></div>
+        <div class="link">
+            <a href="/ipaddtimes/" data-umami-event="添加使用次数">添加使用次数</a>
+            <a href="/ipcheck/" data-umami-event="ip验证">完成验证</a>
+            <a href="https://gt-stats.757678.xyz/" data-umami-event="数据统计&反馈">数据统计&反馈</a>
+            <a href="https://status.hzchu.top/" data-umami-event="服务状态">服务状态</a>
+            <a href="https://blog.hzchu.top" data-umami-event="Blog">Thun888</a>
+        </div>
+        <script>
+            var notyf = new Notyf({
+                duration: 3000,
+                position: {
+                    x: 'right',
+                    y: 'top',
+                }
+            });
+            var turnstile_token = null;
+
+            function turnstilecb(token) {
+                // notyf.success('验证成功!');
+                document.getElementById("tips").innerHTML = "验证成功！点击确定按钮提交";
+
+                turnstile_token = token
+                console.log(token)
+            }
+
+            document.getElementById("submit").addEventListener("click", function() {
+                document.getElementById("submit").disabled = true
+                const formData = new FormData();
+                formData.append('cf-turnstile-response', turnstile_token);
+                fetch('/_api/ipcheck', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.code == 200) {
+                            notyf.success('验证成功，5秒后跳转到首页');
+                            setTimeout(function() {
+                                window.location.href = '/';
+                            }, 5000)
+                        } else {
+                            notyf.error('验证失败，错误信息：' + data.msg);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        notyf.error('发生错误: ' + error.message);
+                    })
+                    .finally(() => {
+                        document.getElementById("submit").disabled = false;
+                    });
+
+            })
+        </script>
+    </div>
+</body>
+
+</html>

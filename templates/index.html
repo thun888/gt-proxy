@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>首页</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        
+        #center {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border: 1px;
+            backdrop-filter: blur(30px) brightness(80%) saturate(160%);
+        }
+        
+        .cf-turnstile {
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        
+        .gap {
+            height: 2px;
+            width: 100%;
+            background-color: #dbdada;
+            border-radius: 1%;
+            margin: 20px 0
+        }
+        
+        .link {
+            text-align: center;
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .link :hover {
+            color: #007BFF;
+        }
+        
+        a {
+            color: #58b142;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .link a {
+            color: #999999;
+        }
+    </style>
+    <script defer src="https://seeyou.hzchu.top/seeyou.js" data-website-id="db773248-e090-4651-a7d1-abfaca1dc74f"></script>
+    <link rel="icon" href="https://raw.hzchu.top/thun888/asstes/master/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <div id="center">
+        <h1>关于本站点</h1>
+        <span>本站点是一个免费的谷歌翻译镜像站，提供免费的API调用。</span><br>
+        <span>为防止滥用和攻击，我们引入了ip验证机制，初次使用需<a href="/ipcheck/">完成验证</a>，完成后可使用（我们会不定时重置ip验证状态）。</span><br>
+        <span>同时，也引入了使用次数机制，初始次数为1000次，可以在<a href="/ipaddtimes/">此处</a>添加使用次数（每次添加1000次使用次数，可累计5000次以便大规模翻译）。</span>
+        <span>非大陆ip无法使用</span>
+        <!-- 分割线 -->
+        <div class="gap"></div>
+        <h1>IP使用情况</h1>
+        <div id="ipInfo">获取中...</div>
+        <div class="gap"></div>
+        <div class="link">
+            <a href="/ipaddtimes/" data-umami-event="添加使用次数">添加使用次数</a>
+            <a href="/ipcheck/" data-umami-event="ip验证">完成验证</a>
+            <a href="https://gt-stats.757678.xyz/" data-umami-event="数据统计&反馈">数据统计&反馈</a>
+            <a href="https://status.hzchu.top/" data-umami-event="服务状态">服务状态</a>
+            <a href="https://blog.hzchu.top" data-umami-event="Blog">Thun888</a>
+        </div>
+
+    </div>
+    <script>
+        fetch('https://gt.hzchu.top/_api/ipinfo')
+            .then(response => response.json())
+            .then(data => {
+                const ipInfoDiv = document.getElementById('ipInfo');
+                ipInfoDiv.innerHTML = `
+                <p>IP地址: ${data.ip}</p>
+                <p>是否已通过验证: ${data.checked}</p>
+                <p>使用次数: ${data.times}</p>
+                <p>上次使用时间: ${data.lastusetime}</p>
+                <p>添加次数: ${data.addtimes * 1000}</p>
+                <p>上次添加时间: ${data.addtime}</p>
+
+              `;
+            })
+            .catch(error => {
+                console.error('获取数据时出错:', error);
+                const ipInfoDiv = document.getElementById('ipInfo');
+                ipInfoDiv.textContent = '获取数据时出错，请稍后重试。';
+            });
+    </script>
+</body>
+
+</html>
